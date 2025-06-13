@@ -1,7 +1,6 @@
 export { run }
 
 import { exec } from 'node:child_process'
-import assert from 'node:assert'
 import pc from '@brillout/picocolors'
 
 type RunOptions = {
@@ -29,17 +28,21 @@ async function run(
   exec(cmd, { cwd }, (err, stdout, stderr) => {
     clearTimeout(t)
 
-    // Useless generic message
-    assert(!err || err.message.startsWith(`Command failed: ${cmd}`))
-    // err.code holds the exit code => it must be `!==0` otherwise Node.js wouldn't have thrown an error
-    assert(!err || (typeof err.code === 'number' && err.code !== 0))
-
     const shouldThrowError = (!!err && !tolerateExitCode) || (!!stderr && !tolerateStderr)
     if (!shouldThrowError) {
-      resolvePromise({ stdout, stderr, exitCode: err?.code || 0 })
+      resolvePromise({
+        stdout,
+        stderr,
+        // err.code holds the exit code (it's `!==0` otherwise Node.js wouldn't have thrown an error)
+        exitCode: err?.code || 0,
+      })
     } else {
-      const errMsg = stderr || stdout || err?.message || err
-      assert(errMsg)
+      const errMsg =
+        stderr ||
+        stdout ||
+        // err.message holds a useless generic message (e.g. `Command failed: git show 123456789`)
+        err?.message ||
+        err
       rejectPromise(
         new Error(
           [
