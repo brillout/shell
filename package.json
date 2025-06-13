@@ -1,6 +1,6 @@
 {
   "name": "@brillout/shell",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "main": "./dist/index.js",
   "dependencies": {
     "@brillout/picocolors": "^1.0.28"
