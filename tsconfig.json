@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    // Output
+    "target": "ES2020",
+    "module": "ES2020",
+    "moduleResolution": "Node",
+    "outDir": "dist/",
+    "declaration": true,
+    // User-code
+    "strict": true,
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "skipLibCheck": true,
+    "esModuleInterop": true
+  }
+}
