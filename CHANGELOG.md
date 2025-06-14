@@ -1,3 +1,17 @@
+# [0.2.0](https://github.com/brillout/shell/compare/v0.1.1...v0.2.0) (2025-06-14)
+
+
+### Bug Fixes
+
+* rename run to shell ([3c51b4f](https://github.com/brillout/shell/commit/3c51b4fa67283c72bb6be827213b8df408b66a7e))
+
+
+### BREAKING CHANGES
+
+* rename run to shell
+
+
+
 ## [0.1.1](https://github.com/brillout/shell/compare/v0.1.0...v0.1.1) (2025-06-14)
 
 
