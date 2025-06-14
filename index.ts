@@ -28,13 +28,18 @@ async function run(
   exec(cmd, { cwd }, (err, stdout, stderr) => {
     clearTimeout(t)
 
-    const shouldThrowError = (!!err && !tolerateExitCode) || (!!stderr && !tolerateStderr)
+    const isFailureExitCode = !!err && !tolerateExitCode
+    const isFailureStderr = !!stderr && !tolerateStderr
+    const shouldThrowError = isFailureExitCode || isFailureStderr
+
+    // err.code holds the exit code (it's `!==0` otherwise Node.js wouldn't have thrown an error)
+    const exitCode = err?.code || 0
+
     if (!shouldThrowError) {
       resolvePromise({
         stdout,
         stderr,
-        // err.code holds the exit code (it's `!==0` otherwise Node.js wouldn't have thrown an error)
-        exitCode: err?.code || 0,
+        exitCode,
       })
     } else {
       const errMsg =
@@ -43,15 +48,16 @@ async function run(
         // err.message holds a useless generic message (e.g. `Command failed: git show 123456789`)
         err?.message ||
         err
+      const errReason = isFailureExitCode ? `exit code ${exitCode}` : `stderr`
       rejectPromise(
         new Error(
           [
-            `========= COMMAND FAILED ==========`,
+            `============= COMMAND FAILED ==============`,
             `Command: ${colorCmd(cmd)}`,
             `cwd: ${colorCwd(cwd)}`,
-            `============== ERROR ==============`,
-            colorErr(String(errMsg).trim()),
-            `===================================`,
+            `=========== ERROR (${colorErrReason(errReason)}) ===========`,
+            colorErrMsg(String(errMsg).trim()),
+            `===========================================`,
           ].join('\n'),
         ),
       )
@@ -67,8 +73,11 @@ function colorCmd(cmd: string) {
 function colorCwd(cmd: string) {
   return pc.bold(pc.yellow(cmd))
 }
-function colorErr(err: string) {
-  return pc.bold(pc.red(err))
+function colorErrMsg(errMsg: string) {
+  return pc.bold(pc.red(errMsg))
+}
+function colorErrReason(errReason: string) {
+  return pc.bold(errReason)
 }
 
 function genPromise<T>() {
