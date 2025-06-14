@@ -1,4 +1,4 @@
-export { run }
+export { shell }
 
 import { exec } from 'node:child_process'
 import pc from '@brillout/picocolors'
@@ -15,7 +15,7 @@ type RunReturn = {
   exitCode: number
 }
 
-async function run(
+async function shell(
   cmd: string,
   { cwd = process.cwd(), timeout = 25 * 1000, tolerateStderr, tolerateExitCode }: RunOptions = {},
 ): Promise<RunReturn> {
