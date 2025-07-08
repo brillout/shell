@@ -1,3 +1,12 @@
+## [0.2.1](https://github.com/brillout/shell/compare/v0.2.0...v0.2.1) (2025-07-08)
+
+
+### Bug Fixes
+
+* also show STDOUT upon error ([97ea357](https://github.com/brillout/shell/commit/97ea3571ebdf9bfd9fd595d927292feb1b3dcfb4))
+
+
+
 # [0.2.0](https://github.com/brillout/shell/compare/v0.1.1...v0.2.0) (2025-06-14)
 
 
