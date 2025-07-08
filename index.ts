@@ -22,7 +22,7 @@ async function shell(
   const { promise, resolvePromise, rejectPromise } = genPromise<RunReturn>()
 
   const t = setTimeout(() => {
-    rejectPromise(new Error(`Command ${colorCmd(cmd)} (${colorCwd(cwd)}) timeout after ${timeout / 1000} seconds.`))
+    rejectPromise(new Error(`Command ${colorBlue(cmd)} (${colorYellow(cwd)}) timeout after ${timeout / 1000} seconds.`))
   }, timeout)
 
   exec(cmd, { cwd }, (err, stdout, stderr) => {
@@ -42,42 +42,50 @@ async function shell(
         exitCode,
       })
     } else {
-      const errMsg =
-        stderr ||
-        stdout ||
-        // err.message holds a useless generic message (e.g. `Command failed: git show 123456789`)
-        err?.message ||
-        err
-      const errReason = isFailureExitCode ? `exit code ${exitCode}` : `stderr`
-      rejectPromise(
-        new Error(
-          [
-            `============= COMMAND FAILED ==============`,
-            `Command: ${colorCmd(cmd)}`,
-            `cwd: ${colorCwd(cwd)}`,
-            `=========== ERROR (${colorErrReason(errReason)}) ===========`,
-            colorErrMsg(String(errMsg).trim()),
-            `===========================================`,
-          ].join('\n'),
-        ),
-      )
+      const errReason = [
+        isFailureExitCode ? colorRed(`exit code ${exitCode}`) : null,
+        isFailureStderr ? colorRed('STDERR') : null,
+      ]
+        .filter(Boolean)
+        .join(' and ')
+      const msg = [
+        '[@brillout/shell] Shell command failed:',
+        `================= ${colorBold('STDOUT')} ==================`,
+        logStd(stdout),
+        `================= ${colorRed('STDERR')} ==================`,
+        logStd(stderr),
+        `============= COMMAND FAILED ==============`,
+        `Command: ${colorBlue(cmd)}`,
+        `Reason: ${errReason}`,
+        `cwd: ${colorYellow(cwd)}`,
+        `===========================================`,
+      ].join('\n')
+      rejectPromise(new Error(msg))
     }
   })
 
   return promise
 }
 
-function colorCmd(cmd: string) {
-  return pc.bold(pc.blue(cmd))
+function logStd(std: string) {
+  const s = std.trim()
+  return s ? s : colorDim('(empty)')
 }
-function colorCwd(cmd: string) {
-  return pc.bold(pc.yellow(cmd))
+
+function colorBlue(str: string) {
+  return pc.bold(pc.blue(str))
 }
-function colorErrMsg(errMsg: string) {
-  return pc.bold(pc.red(errMsg))
+function colorYellow(str: string) {
+  return pc.bold(pc.yellow(str))
 }
-function colorErrReason(errReason: string) {
-  return pc.bold(errReason)
+function colorRed(str: string) {
+  return pc.bold(pc.red(str))
+}
+function colorBold(str: string) {
+  return pc.bold(str)
+}
+function colorDim(str: string) {
+  return pc.dim(str)
 }
 
 function genPromise<T>() {
