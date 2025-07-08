@@ -20,7 +20,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
-    "@brillout/release-me": "^0.4.5",
+    "@brillout/release-me": "^0.4.8",
     "@types/node": "^24.0.1",
     "typescript": "^5.8.3",
     "vitest": "^3.2.3"
