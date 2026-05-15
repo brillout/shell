@@ -1,3 +1,12 @@
+## [0.2.2](https://github.com/brillout/shell/compare/v0.2.1...v0.2.2) (2026-05-15)
+
+
+### Bug Fixes
+
+* add link to repo ([dc92175](https://github.com/brillout/shell/commit/dc92175dab99d21d14be9fe2db627c94b3345b76))
+
+
+
 ## [0.2.1](https://github.com/brillout/shell/compare/v0.2.0...v0.2.1) (2025-07-08)
 
 
